@@ -12,8 +12,8 @@ export interface LoginResponse {
 }
 
 export interface Location {
-  Location_Code: string;
-  Location_Name: string;
+  location_Code: string;
+  location_Name: string;
 }
 
 @Injectable({

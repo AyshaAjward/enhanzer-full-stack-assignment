@@ -1,1 +1,102 @@
-<p>purchase-bill works!</p>
+<div class="purchase-container">
+  <h2>Purchase Bill</h2>
+
+  <div class="form-grid">
+    <div>
+      <label>Item</label>
+      <select [(ngModel)]="selectedItem">
+        <option value="">Select Item</option>
+        <option *ngFor="let item of itemOptions" [value]="item">
+          {{ item }}
+        </option>
+      </select>
+    </div>
+
+    <div>
+      <label>Batch</label>
+
+      <select [(ngModel)]="selectedBatch">
+        <option value="">Select Batch</option>
+
+        <option *ngFor="let location of locations" [value]="location.location_Name">
+          {{ location.location_Name }}
+        </option>
+      </select>
+    </div>
+
+    <div>
+      <label>Standard Cost</label>
+      <input type="number" [(ngModel)]="standardCost" (ngModelChange)="updateMargin()" />
+    </div>
+
+    <div>
+      <label>Standard Price</label>
+      <input type="number" [(ngModel)]="standardPrice" (ngModelChange)="updateMargin()" />
+    </div>
+
+    <div>
+      <label>Margin</label>
+      <input type="number" [value]="margin" readonly />
+    </div>
+
+    <div>
+      <label>Quantity</label>
+      <input type="number" [(ngModel)]="quantity" />
+    </div>
+
+    <div>
+      <label>Free Qty</label>
+      <input type="number" [(ngModel)]="freeQty" />
+    </div>
+
+    <div>
+      <label>Discount (%)</label>
+      <input type="number" [(ngModel)]="discount" />
+    </div>
+  </div>
+
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <button type="button" (click)="addItem()">Add Item</button>
+
+  <h3>Purchase Items</h3>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Batch</th>
+          <th>Cost</th>
+          <th>Price</th>
+          <th>Margin</th>
+          <th>Qty</th>
+          <th>Free Qty</th>
+          <th>Discount</th>
+          <th>Total Cost</th>
+          <th>Total Selling</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of billItems">
+          <td>{{ item.itemName }}</td>
+          <td>{{ item.batch }}</td>
+          <td>{{ item.standardCost }}</td>
+          <td>{{ item.standardPrice }}</td>
+          <td>{{ item.margin }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.freeQty }}</td>
+          <td>{{ item.discount }}%</td>
+          <td>{{ item.totalCost | number: '1.2-2' }}</td>
+          <td>{{ item.totalSelling | number: '1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="summary">
+    <p><strong>Total Items:</strong> {{ totalItems }}</p>
+    <p><strong>Total Quantity:</strong> {{ totalQuantity }}</p>
+  </div>
+</div>
