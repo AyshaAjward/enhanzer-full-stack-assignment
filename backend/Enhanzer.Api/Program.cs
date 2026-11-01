@@ -16,12 +16,16 @@ builder.Services.AddHttpClient<ExternalAuthService>();
 
 builder.Services.AddDistributedMemoryCache();
 
+
+builder.Services.AddDistributedMemoryCache();
+
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = ".Enhanzer.Session";
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
     options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
     options.IdleTimeout = TimeSpan.FromHours(2);
 });
 

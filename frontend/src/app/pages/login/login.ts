@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -9,26 +11,39 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './login.css',
 })
 export class Login {
-  email: string = '';
-  password: string = '';
+  email = '';
+  password = '';
+  showPassword = false;
+  errorMessage = '';
+  submitted = false;
+  isLoading = false;
 
-  showPassword: boolean = false;
-  errorMessage: string = '';
-
-  submitted: boolean = false;
-  isLoading: boolean = false;
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+  ) {}
 
   onLogin(): void {
     this.submitted = true;
     this.errorMessage = '';
 
     if (!this.email.trim() || !this.password) {
+      this.errorMessage = 'Please enter your email and password.';
       return;
     }
 
-    // API integration will be added here.
-    console.log('Email:', this.email);
-    console.log('Login form submitted');
+    this.isLoading = true;
+
+    this.authService.login(this.email.trim(), this.password).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigate(['/purchase-bill']);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.errorMessage = error.error?.message || 'Login failed. Please try again.';
+      },
+    });
   }
 
   togglePassword(): void {
