@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService, Location } from '../../core/services/auth.service';
+import { AuthService, Location, PurchaseBillItemRequest } from '../../core/services/auth.service';
 
 interface BillItem {
   itemName: string;
@@ -41,6 +41,9 @@ export class PurchaseBill implements OnInit {
   billItems: BillItem[] = [];
 
   errorMessage = '';
+
+  isSaving = false;
+  successMessage = '';
 
   constructor(private authService: AuthService) {}
 
@@ -115,5 +118,42 @@ export class PurchaseBill implements OnInit {
 
   get totalQuantity(): number {
     return this.billItems.reduce((total, item) => total + item.quantity, 0);
+  }
+
+  savePurchaseBill(): void {
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    if (this.billItems.length === 0) {
+      this.errorMessage = 'Please add at least one item before saving.';
+      return;
+    }
+
+    const items: PurchaseBillItemRequest[] = this.billItems.map((item) => ({
+      itemName: item.itemName,
+      batchName: item.batch,
+      standardCost: item.standardCost,
+      standardPrice: item.standardPrice,
+      margin: item.margin,
+      quantity: item.quantity,
+      freeQuantity: item.freeQty,
+      discount: item.discount,
+    }));
+
+    this.isSaving = true;
+
+    this.authService.savePurchaseBill(items).subscribe({
+      next: (response) => {
+        this.isSaving = false;
+        this.successMessage = `${response.message} Bill ID: ${response.billId}`;
+
+        // Clear the form table after a successful save.
+        this.billItems = [];
+      },
+      error: (error) => {
+        this.isSaving = false;
+        this.errorMessage = error.error?.message || 'Unable to save the purchase bill.';
+      },
+    });
   }
 }

@@ -55,7 +55,11 @@
     </div>
   </div>
 
-  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  @if (errorMessage) {
+    <p class="error">
+      {{ errorMessage }}
+    </p>
+  }
 
   <button type="button" (click)="addItem()">Add Item</button>
 
@@ -79,18 +83,20 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let item of billItems">
-          <td>{{ item.itemName }}</td>
-          <td>{{ item.batch }}</td>
-          <td>{{ item.standardCost }}</td>
-          <td>{{ item.standardPrice }}</td>
-          <td>{{ item.margin }}</td>
-          <td>{{ item.quantity }}</td>
-          <td>{{ item.freeQty }}</td>
-          <td>{{ item.discount }}%</td>
-          <td>{{ item.totalCost | number: '1.2-2' }}</td>
-          <td>{{ item.totalSelling | number: '1.2-2' }}</td>
-        </tr>
+        @for (item of billItems; track $index) {
+          <tr>
+            <td>{{ item.itemName }}</td>
+            <td>{{ item.batch }}</td>
+            <td>{{ item.standardCost }}</td>
+            <td>{{ item.standardPrice }}</td>
+            <td>{{ item.margin }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.freeQty }}</td>
+            <td>{{ item.discount }}%</td>
+            <td>{{ item.totalCost | number: '1.2-2' }}</td>
+            <td>{{ item.totalSelling | number: '1.2-2' }}</td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>
@@ -99,4 +105,26 @@
     <p><strong>Total Items:</strong> {{ totalItems }}</p>
     <p><strong>Total Quantity:</strong> {{ totalQuantity }}</p>
   </div>
+
+  <div class="form-messages">
+    @if (successMessage) {
+      <p class="success">
+        {{ successMessage }}
+      </p>
+    }
+
+    @if (errorMessage) {
+      <p class="error">
+        {{ errorMessage }}
+      </p>
+    }
+  </div>
+
+  <button
+    type="button"
+    (click)="savePurchaseBill()"
+    [disabled]="isSaving || billItems.length === 0"
+  >
+    {{ isSaving ? 'Saving...' : 'Save Purchase Bill' }}
+  </button>
 </div>

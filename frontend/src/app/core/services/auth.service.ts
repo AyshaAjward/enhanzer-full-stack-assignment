@@ -16,6 +16,24 @@ export interface Location {
   location_Name: string;
 }
 
+export interface PurchaseBillItemRequest {
+  itemName: string;
+  batchName: string;
+  standardCost: number;
+  standardPrice: number;
+  margin: number;
+  quantity: number;
+  freeQuantity: number;
+  discount: number;
+}
+
+export interface SavePurchaseBillResponse {
+  message: string;
+  billId: number;
+  totalItems: number;
+  totalQuantity: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -34,6 +52,14 @@ export class AuthService {
 
   getLocations(): Observable<Location[]> {
     return this.http.get<Location[]>(`${this.apiUrl}/Locations`, { withCredentials: true });
+  }
+
+  savePurchaseBill(items: PurchaseBillItemRequest[]) {
+    return this.http.post<SavePurchaseBillResponse>(
+      `${this.apiUrl}/PurchaseBills`,
+      { items },
+      { withCredentials: true },
+    );
   }
 
   checkSession(): Observable<{ authenticated: boolean }> {

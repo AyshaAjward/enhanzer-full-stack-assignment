@@ -73,6 +73,20 @@ th {
   color: #c62828;
 }
 
+.success {
+  color: #218838;
+  margin-top: 12px;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-messages {
+  margin-top: 12px;
+}
+
 @media (max-width: 768px) {
   .form-grid {
     grid-template-columns: repeat(2, 1fr);
