@@ -92,3 +92,23 @@ button:disabled {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+@media (max-width: 480px) {
+  .purchase-container {
+    margin: 10px;
+    padding: 14px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .summary {
+    text-align: left;
+  }
+
+  button {
+    width: 100%;
+  }
+}

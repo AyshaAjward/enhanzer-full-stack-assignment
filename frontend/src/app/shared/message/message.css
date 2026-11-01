@@ -1,0 +1,15 @@
+.error {
+  color: #c62828;
+  background: #fff0f0;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 12px 0;
+}
+
+.success {
+  color: #218838;
+  background: #effaf1;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 12px 0;
+}

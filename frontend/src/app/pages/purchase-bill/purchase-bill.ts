@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Message } from '../../shared/message/message';
 import { AuthService, Location, PurchaseBillItemRequest } from '../../core/services/auth.service';
 
 interface BillItem {
@@ -19,7 +20,7 @@ interface BillItem {
 @Component({
   selector: 'app-purchase-bill',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, Message],
   templateUrl: './purchase-bill.html',
   styleUrl: './purchase-bill.css',
 })

@@ -113,9 +113,7 @@
 
       <!-- API error message -->
       @if (errorMessage) {
-        <div class="error-message">
-          {{ errorMessage }}
-        </div>
+        <app-message [message]="errorMessage" type="error" />
       }
 
       <!-- Login button -->

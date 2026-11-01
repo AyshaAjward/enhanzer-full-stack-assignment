@@ -108,15 +108,11 @@
 
   <div class="form-messages">
     @if (successMessage) {
-      <p class="success">
-        {{ successMessage }}
-      </p>
+      <app-message [message]="successMessage" type="success" />
     }
 
     @if (errorMessage) {
-      <p class="error">
-        {{ errorMessage }}
-      </p>
+      <app-message [message]="errorMessage" type="error" />
     }
   </div>
 
