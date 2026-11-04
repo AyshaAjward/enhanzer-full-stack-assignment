@@ -43,7 +43,6 @@ export class Dashboard implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.time('Dashboard total loading time');
     this.loadDashboard();
   }
 
@@ -83,7 +82,7 @@ export class Dashboard implements OnInit {
         },
 
         error: (error) => {
-          console.error('Dashboard loading error:', error);
+          //console.error('Dashboard loading error:', error);
 
           this.errorMessage =
             error.name === 'TimeoutError'

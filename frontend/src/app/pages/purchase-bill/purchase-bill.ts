@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Message } from '../../shared/message/message';
@@ -46,7 +46,10 @@ export class PurchaseBill implements OnInit {
   isSaving = false;
   successMessage = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     this.loadLocations();
@@ -56,9 +59,15 @@ export class PurchaseBill implements OnInit {
     this.authService.getLocations().subscribe({
       next: (data) => {
         this.locations = data;
+
+        //console.log('Locations received:', this.locations);
+
+        this.cdr.markForCheck();
       },
       error: () => {
         this.errorMessage = 'Unable to load locations.';
+
+        this.cdr.markForCheck();
       },
     });
   }
@@ -127,6 +136,7 @@ export class PurchaseBill implements OnInit {
 
     if (this.billItems.length === 0) {
       this.errorMessage = 'Please add at least one item before saving.';
+      this.cdr.markForCheck();
       return;
     }
 
@@ -142,18 +152,34 @@ export class PurchaseBill implements OnInit {
     }));
 
     this.isSaving = true;
+    this.cdr.markForCheck();
+
+    //console.time('Purchase bill save API time');
 
     this.authService.savePurchaseBill(items).subscribe({
       next: (response) => {
+        //console.timeEnd('Purchase bill save API time');
+
         this.isSaving = false;
         this.successMessage = `${response.message} Bill ID: ${response.billId}`;
 
         // Clear the form table after a successful save.
         this.billItems = [];
+
+        //console.log('Purchase bill saved successfully:', response);
+
+        this.cdr.markForCheck();
       },
+
       error: (error) => {
+        //console.timeEnd('Purchase bill save API time');
+
         this.isSaving = false;
         this.errorMessage = error.error?.message || 'Unable to save the purchase bill.';
+
+        //console.error('Purchase bill save error:', error);
+
+        this.cdr.markForCheck();
       },
     });
   }
