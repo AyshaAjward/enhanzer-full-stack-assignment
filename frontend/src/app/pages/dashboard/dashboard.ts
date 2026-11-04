@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { forkJoin, timeout, finalize } from 'rxjs';
@@ -37,15 +37,21 @@ export class Dashboard implements OnInit {
     '#c18b54',
   ];
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
+    console.time('Dashboard total loading time');
     this.loadDashboard();
   }
 
   loadDashboard() {
     this.isLoading = true;
     this.errorMessage = '';
+
+    this.cdr.markForCheck();
 
     forkJoin({
       orders: this.authService.getLatestOrders(),
@@ -56,19 +62,24 @@ export class Dashboard implements OnInit {
         timeout({ first: 15000 }),
         finalize(() => {
           this.isLoading = false;
+
+          // Notify Angular that the view needs updating
+          this.cdr.markForCheck();
         }),
       )
       .subscribe({
         next: (result) => {
-          console.log('SUCCESS: All dashboard requests completed');
-
           this.latestOrders = result.orders;
           this.oldestItems = result.items;
           this.itemQuantities = result.quantities;
 
-          this.isLoading = false;
+          // console.log('Dashboard data received:', result);
+          // console.log('Latest orders:', this.latestOrders.length);
+          // console.log('Oldest items:', this.oldestItems.length);
+          // console.log('Item quantities:', this.itemQuantities.length);
 
-          console.log('Loading state:', this.isLoading);
+          // Notify Angular after receiving the API response
+          this.cdr.markForCheck();
         },
 
         error: (error) => {
@@ -78,6 +89,8 @@ export class Dashboard implements OnInit {
             error.name === 'TimeoutError'
               ? 'The dashboard is taking too long to load. Please try again.'
               : error.error?.message || 'Unable to load dashboard data.';
+
+          this.cdr.markForCheck();
         },
       });
   }

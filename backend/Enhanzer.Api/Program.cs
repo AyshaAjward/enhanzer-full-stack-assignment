@@ -16,9 +16,6 @@ builder.Services.AddHttpClient<ExternalAuthService>();
 
 builder.Services.AddDistributedMemoryCache();
 
-
-builder.Services.AddDistributedMemoryCache();
-
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = ".Enhanzer.Session";

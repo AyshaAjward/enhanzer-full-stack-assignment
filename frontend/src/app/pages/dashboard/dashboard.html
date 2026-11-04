@@ -46,11 +46,15 @@
         </div>
       </div>
 
-      <div *ngIf="isLoading" class="message">Loading dashboard data...</div>
+      @if (isLoading) {
+        <div class="message">Loading dashboard data...</div>
+      }
 
-      <div *ngIf="errorMessage" class="error-message">
-        {{ errorMessage }}
-      </div>
+      @if (errorMessage) {
+        <div class="error-message">
+          {{ errorMessage }}
+        </div>
+      }
 
       <!-- Widgets -->
       <div class="widgets">
