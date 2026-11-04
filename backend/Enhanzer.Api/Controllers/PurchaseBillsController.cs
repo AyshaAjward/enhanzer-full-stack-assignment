@@ -142,4 +142,77 @@ public class PurchaseBillsController : ControllerBase
             });
         }
     }
+
+    [HttpGet("latest")]
+    public async Task<IActionResult> GetLatestOrders()
+    {
+        if (!IsAuthenticated())
+        {
+            return Unauthorized(new { message = "Please log in first." });
+        }
+
+        var orders = await (
+            from bill in _db.PurchaseBills
+            join item in _db.PurchaseBillItems
+                on bill.Id equals item.Purchase_Bill_Id into billItems
+            orderby bill.Created_At descending
+            select new
+            {
+                id = bill.Id,
+                netAmount = billItems.Sum(x => (decimal?)x.Total_Cost) ?? 0m,
+                itemCount = billItems.Count()
+            }
+        )
+        .Take(5)
+        .ToListAsync();
+
+        return Ok(orders);
+    }
+
+    [HttpGet("oldest-items")]
+    public async Task<IActionResult> GetOldestItems()
+    {
+        if (!IsAuthenticated())
+        {
+            return Unauthorized(new { message = "Please log in first." });
+        }
+
+        var items = await (
+            from item in _db.PurchaseBillItems
+            join bill in _db.PurchaseBills
+                on item.Purchase_Bill_Id equals bill.Id
+            orderby bill.Created_At ascending, item.Id ascending
+            select new
+            {
+                purchaseOrderId = bill.Id,
+                itemName = item.Item_Name,
+                quantity = item.Quantity
+            }
+        )
+        .Take(10)
+        .ToListAsync();
+
+        return Ok(items);
+    }
+
+    [HttpGet("item-quantities")]
+    public async Task<IActionResult> GetItemQuantities()
+    {
+        if (!IsAuthenticated())
+        {
+            return Unauthorized(new { message = "Please log in first." });
+        }
+
+        var quantities = await _db.PurchaseBillItems
+            .GroupBy(item => item.Item_Name)
+            .Select(group => new
+            {
+                itemName = group.Key,
+                quantity = group.Sum(item => item.Quantity)
+            })
+            .OrderByDescending(item => item.quantity)
+            .ToListAsync();
+
+        return Ok(quantities);
+    }
 }

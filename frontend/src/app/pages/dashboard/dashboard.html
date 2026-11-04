@@ -1,0 +1,156 @@
+<div class="dashboard">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">E</div>
+      <span>Enhanzer</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" class="nav-item active">
+        <span class="nav-icon">▦</span>
+        <span>Dashboard</span>
+      </a>
+
+      <a routerLink="/purchase-bill" class="nav-item">
+        <span class="nav-icon">▤</span>
+        <span>Purchase Bill</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <span>Full Stack Assignment</span>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="topbar">
+      <div>
+        <h2>Welcome Dashboard</h2>
+        <p>Overview of your purchase orders and items</p>
+      </div>
+
+      <button class="refresh-button" (click)="loadDashboard()" [disabled]="isLoading">
+        ↻ Refresh
+      </button>
+    </header>
+
+    <!-- Dashboard Content -->
+    <section class="dashboard-content">
+      <div class="page-heading">
+        <div>
+          <h1>Dashboard Overview</h1>
+          <p>Purchase order summary and item analysis</p>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="message">Loading dashboard data...</div>
+
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Widgets -->
+      <div class="widgets">
+        <!-- Widget 01: Latest Orders -->
+        <section class="widget orders-widget">
+          <div class="widget-header">
+            <div>
+              <span class="widget-number">WIDGET 01</span>
+              <h3>Latest Purchase Orders</h3>
+              <p>Most recent five purchase orders</p>
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Net Amount</th>
+                  <th>No. of Items</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let order of latestOrders">
+                  <td>#{{ order.id }}</td>
+                  <td>{{ order.netAmount | number: '1.2-2' }}</td>
+                  <td>{{ order.itemCount }}</td>
+                </tr>
+
+                <tr *ngIf="!isLoading && latestOrders.length === 0">
+                  <td colspan="3" class="empty-message">No purchase orders found.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Widget 02: Oldest Items -->
+        <section class="widget items-widget">
+          <div class="widget-header">
+            <div>
+              <span class="widget-number">WIDGET 02</span>
+              <h3>Oldest Purchase Items</h3>
+              <p>First ten purchase order items</p>
+            </div>
+          </div>
+
+          <div class="item-list">
+            <div class="item-row" *ngFor="let item of oldestItems">
+              <div class="item-details">
+                <strong>{{ item.itemName }}</strong>
+                <span>Order #{{ item.purchaseOrderId }}</span>
+              </div>
+
+              <span class="quantity"> {{ item.quantity }} units </span>
+            </div>
+
+            <div *ngIf="!isLoading && oldestItems.length === 0" class="empty-message">
+              No purchase items found.
+            </div>
+          </div>
+        </section>
+
+        <!-- Widget 03: Donut Chart -->
+        <section class="widget chart-widget">
+          <div class="widget-header">
+            <div>
+              <span class="widget-number">WIDGET 03</span>
+              <h3>Item Quantity Analysis</h3>
+              <p>Total quantity grouped by item name</p>
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <div class="donut-chart" [style.background]="getDonutGradient()">
+              <div class="donut-center">
+                <strong>{{ totalQuantity }}</strong>
+                <span>Total Quantity</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-legend">
+            <div class="legend-item" *ngFor="let item of itemQuantities; let i = index">
+              <span class="legend-color" [style.backgroundColor]="getItemColor(i)"> </span>
+
+              <span class="legend-name">
+                {{ item.itemName }}
+              </span>
+
+              <strong>{{ item.quantity }}</strong>
+            </div>
+
+            <div *ngIf="!isLoading && itemQuantities.length === 0" class="empty-message">
+              No item data available.
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+</div>

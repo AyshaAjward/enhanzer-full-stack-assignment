@@ -38,7 +38,7 @@ export class Login {
     this.authService.login(this.email.trim(), this.password).subscribe({
       next: () => {
         this.isLoading = false;
-        this.router.navigate(['/purchase-bill']);
+        this.router.navigate(['/dashboard']);
       },
       error: (error) => {
         this.isLoading = false;

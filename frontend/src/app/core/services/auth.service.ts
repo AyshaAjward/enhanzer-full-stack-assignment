@@ -34,6 +34,23 @@ export interface SavePurchaseBillResponse {
   totalQuantity: number;
 }
 
+export interface PurchaseOrder {
+  id: number;
+  netAmount: number;
+  itemCount: number;
+}
+
+export interface PurchaseOrderItem {
+  purchaseOrderId: number;
+  itemName: string;
+  quantity: number;
+}
+
+export interface ItemQuantity {
+  itemName: string;
+  quantity: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -60,6 +77,24 @@ export class AuthService {
       { items },
       { withCredentials: true },
     );
+  }
+
+  getLatestOrders(): Observable<PurchaseOrder[]> {
+    return this.http.get<PurchaseOrder[]>(`${this.apiUrl}/PurchaseBills/latest`, {
+      withCredentials: true,
+    });
+  }
+
+  getOldestItems(): Observable<PurchaseOrderItem[]> {
+    return this.http.get<PurchaseOrderItem[]>(`${this.apiUrl}/PurchaseBills/oldest-items`, {
+      withCredentials: true,
+    });
+  }
+
+  getItemQuantities(): Observable<ItemQuantity[]> {
+    return this.http.get<ItemQuantity[]>(`${this.apiUrl}/PurchaseBills/item-quantities`, {
+      withCredentials: true,
+    });
   }
 
   checkSession(): Observable<{ authenticated: boolean }> {
